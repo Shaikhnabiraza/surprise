@@ -15,65 +15,85 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-align: center;
             overflow: hidden;
+            position: relative;
+        }
+
+        /* Floating Hearts Animation */
+        .heart {
+            position: absolute;
+            color: #ff4d6d;
+            font-size: 20px;
+            user-select: none;
+            animation: float 4s linear infinite;
+            z-index: 0;
+            opacity: 0.6;
+        }
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
         }
 
         .container {
-            background: white;
-            padding: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
             border-radius: 30px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            width: 400px;
-            min-height: 550px;
+            width: 85%;
+            max-width: 380px;
+            min-height: 480px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            z-index: 10;
         }
 
-        /* Fixed image size to stop the overflow from your screenshot */
+        /* STRICT IMAGE SIZING FOR MOBILE */
         .val-img {
             width: 100%;
-            max-height: 350px; 
-            object-fit: contain; /* Shows the full photo without cropping */
+            height: 250px; /* Fixed height for mobile */
+            object-fit: contain; /* Shows full photo without stretch */
             border-radius: 20px;
             margin-bottom: 20px;
+            background-color: #fff;
         }
 
         h1 {
             color: #d63384;
-            font-size: 2.5rem; /* Large font */
-            margin: 10px 0;
+            font-size: 1.8rem;
+            margin: 5px 0;
         }
 
         #message {
-            font-size: 1.4rem;
+            font-size: 1.1rem;
             color: #555;
-            margin-bottom: 25px;
-            min-height: 30px;
+            margin-bottom: 20px;
+            font-weight: 500;
         }
 
         .buttons {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 20px;
+            gap: 15px;
             width: 100%;
-            min-height: 100px;
+            min-height: 80px;
         }
 
         button {
-            padding: 15px 30px;
-            font-size: 1.3rem;
+            padding: 12px 25px;
+            font-size: 1.1rem;
             font-weight: bold;
             border: none;
             border-radius: 15px;
             cursor: pointer;
-            transition: 0.2s;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         #yesBtn, #surpriseBtn {
             background-color: #ff4d6d;
             color: white;
+            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
         }
 
         #noBtn {
@@ -81,21 +101,15 @@
             color: white;
         }
 
-        .hidden {
-            display: none;
-        }
-
-        .ring-img {
-            width: 250px;
-            height: auto;
-            margin: 20px 0;
-        }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
+    <div id="hearts"></div>
+
     <div class="container" id="page1">
-        <img src="img.jpeg" alt="Valentine" class="val-img">
+        <img src="her.jpeg" alt="Valentine" class="val-img">
         <h1>Will you be my Valentine? ❤️</h1>
         <p id="message">Choose wisely...</p>
         <div class="buttons">
@@ -105,39 +119,45 @@
     </div>
 
     <div class="container hidden" id="page2">
-        <img src="her.jpeg">
+        <img src="img.jpeg" alt="Happy" class="val-img">
         <h1>I knew it! 🥰</h1>
         <p id="message">I have a special surprise for you...</p>
-        <button id="surpriseBtn" onclick="showPage3()">Click for your surprise! ✨</button>
+        <button id="surpriseBtn" onclick="showPage3()">Click for surprise! ✨</button>
     </div>
 
     <div class="container hidden" id="page3">
-        <img src="ring.jpeg">
-        <h1>Will you stay mine forever? 💍</h1>
-        <p id="message">I love you more than words can say. ❤️</p>
+        <img src="ring.jpeg" alt="Ring" class="val-img">
+        <h1>Forever mine? 💍</h1>
+        <p id="message">I love you more than anything. ❤️</p>
     </div>
 
     <script>
+        // Floating hearts background logic
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 2 + 3 + 's';
+            document.getElementById('hearts').appendChild(heart);
+            setTimeout(() => { heart.remove(); }, 5000);
+        }
+        setInterval(createHeart, 400);
+
         const noBtn = document.getElementById('noBtn');
         const yesBtn = document.getElementById('yesBtn');
-
         let scale = 1;
 
         function moveButton() {
-            // "No" button jumps
             noBtn.style.position = "fixed"; 
             const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
             const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
             noBtn.style.left = x + "px";
             noBtn.style.top = y + "px";
 
-            // "Yes" button grows
-            scale += 0.3; 
+            scale += 0.25; 
             yesBtn.style.transform = `scale(${scale})`;
-
-            // Sassy text
-            const lines = ["Nice try!", "Think again!", "Over here!", "Yes is better!"];
-            document.getElementById('message').innerText = lines[Math.floor(Math.random() * lines.length)];
+            document.getElementById('message').innerText = "Wrong button! 😜";
         }
 
         function showPage2() {
@@ -150,6 +170,5 @@
             document.getElementById('page3').classList.remove('hidden');
         }
     </script>
-
 </body>
 </html>
